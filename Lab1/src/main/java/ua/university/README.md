@@ -10,7 +10,7 @@ Threads can be prioritized, and depending on the priority, preference is given t
 Threads are destroyed when the program terminates.
 
 ### Solution:
-[Main.java](Main.java)  
+[Main1.java](Main1.java)  
 [MyThread.java](MyThread.java)
 
 ---
@@ -34,3 +34,5 @@ Pay attention! A semaphore (blocking variable) is a global variable available to
 If the semaphore regulated the interaction of not flows, but processes, then it should be global in relation to them and thus be in the address space of the operating system that manages the processes.
 
 ### Solution:
+[Main2.java](Main2.java)  
+[MyThread.java](MyThread.java)
