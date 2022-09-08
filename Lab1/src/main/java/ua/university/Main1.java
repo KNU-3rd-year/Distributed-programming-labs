@@ -1,8 +1,8 @@
-package ua.university.task1;
+package ua.university;
 
 import javax.swing.*;
 
-public class Main {
+public class Main1 {
     static JFrame frame;
     static JButton button;
     static JSpinner spinnerLeft, spinnerRight;
@@ -72,14 +72,14 @@ public class Main {
     }
 
     private static void setOnButtonClick() {
-        if (!isThreadsStarted) {
             button.addActionListener(e -> {
-                threadLeft.start();
-                threadRight.start();
-            });
+                if (!isThreadsStarted) {
+                    threadLeft.start();
+                    threadRight.start();
 
-            isThreadsStarted = true;
-        }
+                    isThreadsStarted = true;
+                }
+            });
     }
 
     private static void setOnSinnerLeftValueChange(JSpinner spinner, MyThread thread) {
