@@ -72,12 +72,14 @@ public class Main {
     }
 
     private static void setOnButtonClick() {
-        button.addActionListener(e -> {
-            threadLeft.start();
-            threadRight.start();
-        });
+        if (!isThreadsStarted) {
+            button.addActionListener(e -> {
+                threadLeft.start();
+                threadRight.start();
+            });
 
-        isThreadsStarted = true;
+            isThreadsStarted = true;
+        }
     }
 
     private static void setOnSinnerLeftValueChange(JSpinner spinner, MyThread thread) {

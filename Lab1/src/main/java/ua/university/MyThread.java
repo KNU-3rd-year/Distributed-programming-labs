@@ -10,6 +10,8 @@ public class MyThread extends Thread{
     MyThread(JSlider slider, int targetValue) {
         this.slider = slider;
         this.targetValue = targetValue;
+
+        setPriority(1);
     }
 
     @Override
@@ -17,10 +19,16 @@ public class MyThread extends Thread{
         super.run();
 
         while (true) {
-            slider.setValue(targetValue);
+            int currentValue = slider.getValue();
+            if (currentValue > targetValue) {
+                slider.setValue(currentValue - 1);
+            } else {
+                slider.setValue(currentValue + 1);
+            }
+            System.out.println("Target: " + targetValue + ", priority: " + Thread.currentThread().getPriority());
 
             try {
-                sleep(1000L);
+                sleep(1L);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
