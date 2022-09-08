@@ -1,4 +1,4 @@
-package ua.university;
+package ua.university.task1;
 
 import javax.swing.*;
 
