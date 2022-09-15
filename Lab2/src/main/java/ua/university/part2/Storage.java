@@ -1,4 +1,4 @@
-package ua.university.Part2;
+package ua.university.part2;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package ua.university.Part2;
+package ua.university.part2;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
