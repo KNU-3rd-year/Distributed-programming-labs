@@ -13,7 +13,7 @@ public class Barber extends Thread {
 
     @Override
     public void run() {
-        System.out.println(Thread.currentThread().getName() + ": day is started");
+        System.out.println("Barber " + Thread.currentThread().getName() + " started working");
 
         while (true) {
             synchronized (barbershop.barber) {
@@ -25,10 +25,11 @@ public class Barber extends Thread {
                     }
                 }
 
+                System.out.println("Barber " + Thread.currentThread().getName() + " is awake");
                 shave(barbershop.getCurrentClient());
                 barbershop.makeChairFree();
-                barbershop.notify();
                 try {
+                    System.out.println("Barber " + Thread.currentThread().getName() + " goes to sleep");
                     wait();
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
@@ -38,13 +39,13 @@ public class Barber extends Thread {
     }
 
     private void shave(@NotNull Client client) {
-        System.out.println(Thread.currentThread().getName() + ": shaving started");
+        System.out.println("Barber " + Thread.currentThread().getName() + " started shaving");
         try {
             Thread.sleep(2000);
             client.shave();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        System.out.println(Thread.currentThread().getName() + ": shaving ended");
+        System.out.println("Barber " + Thread.currentThread().getName() + " stoped shaving");
     }
 }

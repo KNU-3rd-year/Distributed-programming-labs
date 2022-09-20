@@ -30,13 +30,16 @@ public class Client extends Thread {
                 }
 
                 barbershop.sitInChair(this);
-                barbershop.barber.notify();
                 try {
+                    System.out.println("Client " + Thread.currentThread().getName() + " goes to sleep during the shaving");
                     barbershop.wait();
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
             }
         }
+
+        System.out.println("Client " + Thread.currentThread().getName() + " goes away");
+        interrupt();
     }
 }
