@@ -1,4 +1,4 @@
-# Lab 2
+# Lab 6
 **Topic**: Parallel multiplication of matrices on MPI
 
 ## Task:
