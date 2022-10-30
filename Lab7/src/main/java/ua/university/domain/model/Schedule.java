@@ -1,7 +1,12 @@
 package ua.university.domain.model;
 
+import no.gorandalum.fluentresult.VoidResult;
+
+import java.time.LocalTime;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 public class Schedule {
@@ -11,15 +16,56 @@ public class Schedule {
         this.days = days;
     }
 
-    public void addDay() {}
+    public VoidResult<Exception> addDay(int id, int dayOfWeek) {
+        if (days.size() >= 7) {
+            return VoidResult.error(new IllegalArgumentException());
+        }
+        for (Day day : days) {
+            if (day.getDayOfWeek() == dayOfWeek) {
+                return VoidResult.error(new IllegalArgumentException());
+            }
+        }
+        days.add(new Day(id, dayOfWeek));
+        return VoidResult.success();
+    }
 
-    public void deleteDay() {}
+    public VoidResult<Exception> deleteDay(int dayId) {
+        for (Day day : days) {
+            if (day.getId() == dayId) {
+                days.remove(day);
+                return VoidResult.success();
+            }
+        }
+        return VoidResult.error(new IllegalArgumentException());
+    }
 
-    public void addLesson() {}
+    public VoidResult<Exception> addLesson(int dayOfWeek, String subjectName, String teacherName, LocalTime startTime, LocalTime endTime) {
+        int newLessonId = days.stream().map(Day::getId).max(Comparator.naturalOrder()).get() + 1;
+        for (Day day : days) {
+            if (day.getDayOfWeek() == dayOfWeek) {
+                return day.addLesson(newLessonId, subjectName, teacherName, startTime, endTime);
+            }
+        }
+        return VoidResult.error(new NoSuchElementException());
+    }
 
-    public void deleteLesson() {}
+    public VoidResult<Exception> deleteLesson(int lessonId) {
+        for (Day day : days) {
+            if (day.hasLesson(lessonId)) {
+                return day.removeLesson(lessonId);
+            }
+        }
+        return VoidResult.error(new NoSuchElementException());
+    }
 
-    public void modifyLesson() {}
+    public VoidResult<Exception> modifyLesson(Lesson newLesson) {
+        for (Day day : days) {
+            if (day.hasLesson(newLesson.getId())) {
+                return day.modifyLesson(newLesson);
+            }
+        }
+        return VoidResult.error(new NoSuchElementException());
+    }
 
     public int getLessonsCount(int weekDay) {
         for (Day day : days) {

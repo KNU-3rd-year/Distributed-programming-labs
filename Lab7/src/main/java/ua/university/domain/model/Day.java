@@ -4,7 +4,10 @@ import no.gorandalum.fluentresult.VoidResult;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public class Day {
     private final int id;
@@ -15,6 +18,12 @@ public class Day {
         this.id = id;
         this.dayOfWeek = dayOfWeek;
         this.lessons = lessons;
+    }
+
+    public Day(int id, int dayOfWeek) {
+        this.id = id;
+        this.dayOfWeek = dayOfWeek;
+        this.lessons = new ArrayList<>();
     }
 
     public int getId() {
@@ -37,16 +46,13 @@ public class Day {
         return lessons;
     }
 
-    public VoidResult<Exception> addLesson(Lesson newLesson) {
-        if (lessons.size() >= 7) {
-            return VoidResult.error(new IllegalArgumentException());
-        }
+    public VoidResult<Exception> addLesson(int id, String subjectName, String teacherName, LocalTime startTime, LocalTime endTime) {
         for (Lesson lesson : lessons) {
-            if (lesson.getId() == newLesson.getId()) {
+            if (lesson.getId() == id) {
                 return VoidResult.error(new IllegalArgumentException());
             }
         }
-        lessons.add(newLesson);
+        lessons.add(new Lesson(id, subjectName, teacherName, startTime, endTime));
         return VoidResult.success();
     }
 
@@ -60,11 +66,33 @@ public class Day {
         return VoidResult.error(new IllegalArgumentException());
     }
 
+    public VoidResult<Exception> modifyLesson(Lesson newLesson) {
+        for (Lesson lesson : lessons) {
+            if (lesson.getId() == newLesson.getId()) {
+                return lesson.setSubjectName(newLesson.getSubjectName()).toOptionalResult()
+                        .consume(x -> lesson.setTeacherName(newLesson.getTeacherName()))
+                        .consume(x -> lesson.setStartTime(newLesson.getStartTime()))
+                        .consume(x -> lesson.setEndTime(newLesson.getEndTime()))
+                        .toVoidResult();
+            }
+        }
+        return VoidResult.error(new NoSuchElementException());
+    }
+
+    public boolean hasLesson(int lessonId) {
+        for (Lesson lesson : lessons) {
+            if (lesson.getId() == lessonId) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public String toString() {
         StringBuilder s = new StringBuilder(getDayName(dayOfWeek) + ":\n");
         for (Lesson lesson : lessons) {
-            s.append("\t" + lesson + "\n");
+            s.append("\t").append(lesson).append("\n");
         }
         return s.toString();
     }
