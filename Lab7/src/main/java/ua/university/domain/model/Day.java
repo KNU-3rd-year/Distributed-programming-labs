@@ -1,6 +1,7 @@
 package ua.university.domain.model;
 
 import no.gorandalum.fluentresult.VoidResult;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -57,5 +58,28 @@ public class Day {
             }
         }
         return VoidResult.error(new IllegalArgumentException());
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder s = new StringBuilder(getDayName(dayOfWeek) + ":\n");
+        for (Lesson lesson : lessons) {
+            s.append("\t" + lesson + "\n");
+        }
+        return s.toString();
+    }
+
+    @Contract(pure = true)
+    private @NotNull String getDayName(int i) {
+        switch (i) {
+            case 0: return "Mon";
+            case 1: return "Tue";
+            case 2: return "Wed";
+            case 3: return "Thu";
+            case 4: return "Fri";
+            case 5: return "Sat";
+            case 6: return "Sun";
+            default: throw new IllegalStateException("Wrong day index");
+        }
     }
 }

@@ -71,4 +71,14 @@ public class Lesson {
         this.endTime = endTime;
         return VoidResult.success();
     }
+
+    @Override
+    public String toString() {
+        return "Lesson" +
+                " (id = " + id + ")" +
+                " in " + subjectName +
+                " is taught by " + teacherName +
+                " (" + startTime.getHour() + ":" + startTime.getMinute() + " - " +
+                endTime.getHour() + ":" + endTime.getMinute() + ")";
+    }
 }

@@ -46,4 +46,13 @@ public class Schedule {
     public List<Integer> getDays() {
         return days.stream().map(d -> d.getLessons().size()).collect(Collectors.toList());
     }
+
+    @Override
+    public String toString() {
+        StringBuilder s = new StringBuilder();
+        for (Day day : days) {
+            s.append(day).append("\n");
+        }
+        return s.toString();
+    }
 }
