@@ -1,9 +1,9 @@
 package ua.university.data.DB;
 
-import com.sun.istack.internal.NotNull;
 import javafx.util.Pair;
 import no.gorandalum.fluentresult.Result;
 import no.gorandalum.fluentresult.VoidResult;
+import org.jetbrains.annotations.NotNull;
 import ua.university.domain.model.Day;
 import ua.university.domain.model.Lesson;
 import ua.university.domain.model.Schedule;
@@ -45,7 +45,10 @@ public class DBScheduleRepository implements ScheduleRepository {
 
     @Override
     public VoidResult<Exception> saveSchedule(@NotNull Schedule schedule) {
-        return null;
+        return clearTables()
+                .toOptionalResult()
+                .consume(s -> saveDays(schedule.getSchedules()))
+                .toVoidResult();
     }
 
     private Result<List<Day>, Exception> getDays() {
@@ -94,6 +97,54 @@ public class DBScheduleRepository implements ScheduleRepository {
             return Result.success(lessons);
         } catch (SQLException e) {
             return Result.error(e);
+        }
+    }
+
+    private VoidResult<Exception> clearTables() {
+        try {
+            String sqlLessons = "DELETE FROM LESSONS";
+            String sqlDays = "DELETE FROM DAYS";
+            s.executeUpdate(sqlLessons);
+            s.executeUpdate(sqlDays);
+            return VoidResult.success();
+        } catch (SQLException e) {
+            return VoidResult.error(e);
+        }
+    }
+
+    private VoidResult<Exception> saveDays(@NotNull List<Day> days) {
+        try {
+            for (Day day : days) {
+                String sql = "INSERT INTO DAYS VALUES (" +
+                        day.getId() + ", " +
+                        day.getDayOfWeek() +
+                        ");";
+                s.executeUpdate(sql);
+                saveLessons(day.getLessons(), day.getId())
+                        .consumeError(e -> {throw new RuntimeException(e);});
+            }
+            return VoidResult.success();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private VoidResult<Exception> saveLessons(@NotNull List<Lesson> lessons, int dayId) {
+        try {
+            for (Lesson lesson : lessons) {
+                String sql = "INSERT INTO LESSONS VALUES (" +
+                        lesson.getId() + ", " +
+                        dayId + ", " +
+                        lesson.getSubjectName() + ", " +
+                        lesson.getTeacherName() + ", " +
+                        lesson.getStartTime() + ", " +
+                        lesson.getEndTime() + ", " +
+                        ");";
+                s.executeUpdate(sql);
+            }
+            return VoidResult.success();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 }
