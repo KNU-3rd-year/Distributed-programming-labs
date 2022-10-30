@@ -46,6 +46,7 @@ class ScheduleTest {
             days.add(new Day(4, 4, lessons));
         }
         schedule = new Schedule(days);
+        System.out.println(schedule);
     }
 
     @AfterEach
