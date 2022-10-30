@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalTime;
 
-public class Lesson {
+public class Lesson implements Comparable<Lesson> {
     private final int id;
     private String subjectName;
     private String teacherName;
@@ -80,5 +80,10 @@ public class Lesson {
                 " is taught by " + teacherName +
                 " (" + startTime.getHour() + ":" + startTime.getMinute() + " - " +
                 endTime.getHour() + ":" + endTime.getMinute() + ")";
+    }
+
+    @Override
+    public int compareTo(@NotNull Lesson o) {
+        return startTime.compareTo(o.startTime);
     }
 }

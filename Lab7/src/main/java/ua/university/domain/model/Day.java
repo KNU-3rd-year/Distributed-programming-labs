@@ -8,16 +8,17 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
-public class Day {
+public class Day implements Comparable<Day> {
     private final int id;
     private int dayOfWeek;
-    private final @NotNull List<Lesson> lessons;
+    private @NotNull List<Lesson> lessons;
 
     public Day(int id, int dayOfWeek, @NotNull List<Lesson> lessons) {
         this.id = id;
         this.dayOfWeek = dayOfWeek;
-        this.lessons = lessons;
+        this.lessons = lessons.stream().sorted().collect(Collectors.toList());
     }
 
     public Day(int id, int dayOfWeek) {
@@ -53,6 +54,7 @@ public class Day {
             }
         }
         lessons.add(new Lesson(id, subjectName, teacherName, startTime, endTime));
+        lessons = lessons.stream().sorted().collect(Collectors.toList());
         return VoidResult.success();
     }
 
@@ -76,6 +78,7 @@ public class Day {
                         .toVoidResult();
             }
         }
+        lessons = lessons.stream().sorted().collect(Collectors.toList());
         return VoidResult.error(new NoSuchElementException());
     }
 
@@ -109,5 +112,10 @@ public class Day {
             case 6: return "Sun";
             default: throw new IllegalStateException("Wrong day index");
         }
+    }
+
+    @Override
+    public int compareTo(@NotNull Day o) {
+        return new Integer(dayOfWeek).compareTo(o.dayOfWeek);
     }
 }
